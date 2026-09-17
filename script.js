@@ -1,15 +1,15 @@
 /* =========================================
-   NOIR//01
-   THE ENTRY — INTERACTION
+NOIR//01
+ZERO — INTERACTION SYSTEM
 ========================================= */
 
-const productWrap = document.getElementById("productWrap");
-const soundControl = document.getElementById("soundControl");
-const entry = document.getElementById("entry");
-
+const productWrap = document.getElementById(“productWrap”);
+const soundControl = document.getElementById(“soundControl”);
+const objectProduct = document.querySelector(”.object-product”);
+const detailProduct = document.querySelector(”.detail-product”);
 
 /* =========================================
-   PRODUCT PARALLAX
+STATE
 ========================================= */
 
 let targetX = 0;
@@ -18,138 +18,220 @@ let targetY = 0;
 let currentX = 0;
 let currentY = 0;
 
-function animateProduct() {
+let scrollTarget = 0;
+let scrollCurrent = 0;
 
-  currentX += (targetX - currentX) * 0.08;
-  currentY += (targetY - currentY) * 0.08;
-
-  productWrap.style.transform = `
-    translate3d(
-      ${currentX}px,
-      ${25 + currentY}px,
-      0
-    )
-  `;
-
-  requestAnimationFrame(animateProduct);
-}
-
-animateProduct();
-
+let soundEnabled = false;
+let ambientAudio = null;
 
 /* =========================================
-   MOUSE MOVEMENT
+PRODUCT PARALLAX
 ========================================= */
 
-window.addEventListener("mousemove", (event) => {
+function animate() {
 
-  const x =
-    (event.clientX / window.innerWidth - 0.5);
+currentX +=
+(targetX - currentX) * 0.08;
 
-  const y =
-    (event.clientY / window.innerHeight - 0.5);
+currentY +=
+(targetY - currentY) * 0.08;
 
-  targetX = x * 24;
-  targetY = y * 18;
+scrollCurrent +=
+(scrollTarget - scrollCurrent) * 0.08;
+
+/* ENTRY PRODUCT */
+
+if (productWrap) {
+
+productWrap.style.transform = `
+  translate3d(
+    ${currentX}px,
+    ${25 + currentY}px,
+    0
+  )
+`;
+const entryFade =
+  Math.max(
+    1 - scrollCurrent / 500,
+    0.25
+  );
+const entryBlur =
+  Math.min(
+    scrollCurrent / 100,
+    4
+  );
+productWrap.style.opacity =
+  entryFade;
+productWrap.style.filter =
+  `blur(${entryBlur}px)`;
+
+}
+
+/* OBJECT PRODUCT */
+
+if (objectProduct) {
+
+const objectOffset =
+  Math.max(
+    -scrollCurrent * 0.035,
+    -24
+  );
+objectProduct.style.transform = `
+  translate3d(
+    0,
+    ${objectOffset}px,
+    0
+  )
+  scale(1.08)
+`;
+
+}
+
+/* DETAIL PRODUCT */
+
+if (detailProduct) {
+
+const detailOffset =
+  Math.min(
+    scrollCurrent * 0.025,
+    22
+  );
+detailProduct.style.transform = `
+  translate3d(
+    0,
+    ${detailOffset}px,
+    0
+  )
+  scale(1.22)
+  rotate(-4deg)
+`;
+
+}
+
+requestAnimationFrame(animate);
+}
+
+animate();
+
+/* =========================================
+MOUSE MOVEMENT
+========================================= */
+
+window.addEventListener(“mousemove”, (event) => {
+
+const x =
+event.clientX /
+window.innerWidth -
+0.5;
+
+const y =
+event.clientY /
+window.innerHeight -
+0.5;
+
+targetX = x * 24;
+targetY = y * 18;
 
 });
 
-
 /* =========================================
-   TOUCH MOVEMENT
+TOUCH MOVEMENT
 ========================================= */
 
 window.addEventListener(
-  "touchmove",
-  (event) => {
+“touchmove”,
+(event) => {
 
-    if (!event.touches.length) return;
+if (!event.touches.length) return;
+const touch =
+  event.touches[0];
+const x =
+  touch.clientX /
+  window.innerWidth -
+  0.5;
+const y =
+  touch.clientY /
+  window.innerHeight -
+  0.5;
+targetX = x * 14;
+targetY = y * 10;
 
-    const touch = event.touches[0];
-
-    const x =
-      (touch.clientX / window.innerWidth - 0.5);
-
-    const y =
-      (touch.clientY / window.innerHeight - 0.5);
-
-    targetX = x * 14;
-    targetY = y * 10;
-
-  },
-  { passive: true }
+},
+{ passive: true }
 );
 
-
 /* =========================================
-   RESET POSITION
+RESET PARALLAX
 ========================================= */
 
-window.addEventListener("mouseleave", () => {
+window.addEventListener(
+“mouseleave”,
+() => {
 
-  targetX = 0;
-  targetY = 0;
+targetX = 0;
+targetY = 0;
 
-});
-
+}
+);
 
 /* =========================================
-   SOUND SYSTEM FOUNDATION
+SCROLL
 ========================================= */
 
-let soundEnabled = false;
+window.addEventListener(
+“scroll”,
+() => {
 
-let ambientAudio = null;
+scrollTarget =
+  window.scrollY;
 
+},
+{ passive: true }
+);
 
-/*
-   We are intentionally not loading
-   the ambient track yet.
+/* =========================================
+SOUND SYSTEM
+========================================= */
 
-   Once the audio file exists, we'll
-   connect it here.
-*/
+if (soundControl) {
 
-soundControl.addEventListener("click", () => {
+soundControl.addEventListener(
+“click”,
+() => {
 
-  soundEnabled = !soundEnabled;
-
+  soundEnabled =
+    !soundEnabled;
   soundControl.classList.toggle(
     "active",
     soundEnabled
   );
-
   soundControl.innerHTML = `
     <span class="sound-dot"></span>
     SOUND ${soundEnabled ? "ON" : "OFF"}
   `;
+  /*
+     Audio foundation.
+     Add your ambient audio file later:
+     ambientAudio =
+       new Audio("./audio/ambient.mp3");
+     ambientAudio.loop = true;
+     ambientAudio.volume = 0.25;
+  */
+  if (
+    soundEnabled &&
+    ambientAudio
+  ) {
+    ambientAudio.play()
+      .catch(() => {});
+  }
+  if (
+    !soundEnabled &&
+    ambientAudio
+  ) {
+    ambientAudio.pause();
+  }
+}
 
-});
-
-
-/* =========================================
-   SCROLL RESPONSE
-========================================= */
-
-window.addEventListener(
-  "scroll",
-  () => {
-
-    const scrollY = window.scrollY;
-
-    if (scrollY <= 0) {
-      return;
-    }
-
-    const movement =
-      Math.min(scrollY * 0.18, 80);
-
-    productWrap.style.opacity =
-      Math.max(1 - scrollY / 500, 0.25);
-
-    productWrap.style.filter =
-      `blur(${Math.min(scrollY / 100, 4)}px)`;
-
-  },
-  { passive: true }
 );
+
+}
