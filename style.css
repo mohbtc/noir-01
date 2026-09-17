@@ -425,3 +425,209 @@ body {
   }
 
 }
+
+/* =========================================
+SECTION 02
+THE OBJECT
+========================================= */
+
+.object-section {
+position: relative;
+min-height: 100svh;
+padding: 110px 34px 40px;
+
+background:
+radial-gradient(
+circle at 72% 45%,
+#171717 0%,
+#0d0d0d 32%,
+#080808 70%
+);
+
+overflow: hidden;
+}
+
+/* =========================================
+GRID
+========================================= */
+
+.object-grid {
+position: relative;
+z-index: 5;
+
+display: grid;
+grid-template-columns: 1fr 2fr 1fr;
+align-items: start;
+
+gap: 40px;
+}
+
+.object-index,
+.object-copy {
+font-family: “DM Mono”, monospace;
+font-size: 9px;
+line-height: 1.6;
+letter-spacing: 0.15em;
+color: var(–muted);
+}
+
+.object-heading {
+display: flex;
+flex-direction: column;
+
+font-family: “Space Grotesk”, sans-serif;
+font-size: clamp(52px, 8vw, 120px);
+font-weight: 600;
+
+line-height: 0.82;
+letter-spacing: -0.07em;
+}
+
+.object-heading span:last-child {
+margin-left: 12%;
+}
+
+.object-copy {
+max-width: 180px;
+justify-self: end;
+}
+
+/* =========================================
+PRODUCT VISUAL
+========================================= */
+
+.object-visual {
+position: relative;
+
+width: 100%;
+height: 68vh;
+min-height: 500px;
+
+margin-top: 30px;
+
+display: flex;
+align-items: center;
+justify-content: center;
+}
+
+.object-glow {
+position: absolute;
+
+width: 45vw;
+height: 25vw;
+
+max-width: 600px;
+max-height: 340px;
+
+border-radius: 50%;
+
+background: rgba(255, 90, 31, 0.045);
+
+filter: blur(100px);
+}
+
+.object-product {
+position: relative;
+z-index: 2;
+
+width: min(75vw, 850px);
+height: 100%;
+
+object-fit: contain;
+
+filter:
+drop-shadow(
+0 45px 60px rgba(0, 0, 0, 0.8)
+);
+
+transform: scale(1.08);
+}
+
+/* =========================================
+FOOTER LINE
+========================================= */
+
+.object-footer {
+position: absolute;
+
+left: 34px;
+right: 34px;
+bottom: 35px;
+
+display: grid;
+grid-template-columns: 1fr 1fr 1fr;
+
+font-family: “DM Mono”, monospace;
+font-size: 8px;
+letter-spacing: 0.16em;
+
+color: var(–muted);
+
+border-top: 1px solid var(–border);
+
+padding-top: 14px;
+}
+
+.object-footer span:nth-child(2) {
+text-align: center;
+color: var(–text);
+}
+
+.object-footer span:last-child {
+text-align: right;
+}
+
+/* =========================================
+MOBILE
+========================================= */
+
+@media (max-width: 700px) {
+
+.object-section {
+min-height: 100svh;
+padding: 90px 20px 30px;
+}
+
+.object-grid {
+display: block;
+}
+
+.object-index {
+margin-bottom: 35px;
+}
+
+.object-heading {
+font-size: clamp(54px, 17vw, 100px);
+}
+
+.object-heading span:last-child {
+margin-left: 8%;
+}
+
+.object-copy {
+margin-top: 28px;
+max-width: 220px;
+}
+
+.object-visual {
+height: 48vh;
+min-height: 330px;
+
+margin-top: 10px;
+
+}
+
+.object-product {
+width: 110vw;
+}
+
+.object-footer {
+left: 20px;
+right: 20px;
+bottom: 22px;
+
+font-size: 7px;
+
+}
+
+}
